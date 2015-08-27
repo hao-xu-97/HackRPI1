@@ -8,4 +8,4 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/menu scene.unity
   - enabled: 1
-    path: Assets/main scene.unity
+    path: Assets/pong.unity
