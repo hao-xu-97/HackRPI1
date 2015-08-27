@@ -1512,7 +1512,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7fe8b35fc80a08f44b468e18095e5de3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  clamp: 160
 --- !u!82 &1740762829
 AudioSource:
   m_ObjectHideFlags: 0
@@ -1626,7 +1625,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 69e7c3923582ee74bb1312e9d62e60d4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  horiSpeed: 300
+  horiSpeed: 400
 --- !u!54 &1755419518
 Rigidbody:
   m_ObjectHideFlags: 0

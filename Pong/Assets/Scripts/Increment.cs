@@ -37,8 +37,15 @@ public class Increment : MonoBehaviour {
 			currentScore++;
 			rend.material.SetTexture (0, score [currentScore]);
 		} else {
-			currentScore = 0;
-			rend.material.mainTexture = score [0];
+			if(GameObject.Find("score_0").GetComponent<Increment>().getScore()==9)
+				Application.LoadLevel("win");
+			if(GameObject.Find("score_1").GetComponent<Increment>().getScore()==9)
+				Application.LoadLevel("gameover");
+
 		}
+	}
+
+	public int getScore(){
+		return currentScore;
 	}
 }
