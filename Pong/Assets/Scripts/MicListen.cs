@@ -48,13 +48,19 @@ public class MicListen : MonoBehaviour {
 				avg = 0;
 			}
 		}
-		if (avg <= 400 && avg > 0) {
-			transform.position = new Vector3 (0, -4, 0);
-		} else if (avg >= 1200) {
-			transform.position = new Vector3 (0, 4, 0);
-		} else if (avg > 400 && avg < 1200) {
-			float location = (avg - 800f)/100f;
-			transform.position = new Vector3(0, location, 0);
+		if (avg != 0) {
+			Debug.Log("Average: "+avg);
+			if (avg <= 400 && avg > 0) {
+				Debug.Log("Min pos");
+				transform.position = new Vector3(transform.position.x, -4, 0);
+			} else if (avg >= 1200) {
+				Debug.Log("Max pos");
+				transform.position = new Vector3(transform.position.x, 4, 0);
+			} else if (avg > 400 && avg < 1200) {
+				float location = (avg - 800f) / 100f;
+				Debug.Log ("Location: " + location);
+				transform.position = new Vector3(transform.position.x, location, 0);
+			}
 		}
 	}
 	
