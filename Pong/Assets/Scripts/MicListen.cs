@@ -16,84 +16,44 @@ public class MicListen : MonoBehaviour {
 	void Start () {
 		
 		audio = GetComponent<AudioSource> ();
-		startMic ();
-	}
-	private void startMic() {
 		audio.clip = Microphone.Start(null, true, 1, 44100);
 		while (!(Microphone.GetPosition(null) > 0)) {
 		}
 		audio.Play ();
-		offset = 0;
 	}
-	
+
+	private int sampleCount;
+	private float sampleSum;
 	// Update is called once per frame
 	void Update () {
 		AnalyzeSound();
-		Debug.Log("rmsValue: "+rmsValue);
-		Debug.Log("dbValue: "+dbValue);
-		Debug.Log ("pitchValue: " + pitchValue);
-		//float[] data = new float[100];
-		//Debug.Log (clip.frequency);
-		//	clip.GetData (data, offset);
-		
-		/*if (offset >= 16000) {
-			Debug.Log("Volume: "+avg/1600f);
-			offset = 0;
+		//Debug.Log ("pitchValue: " + pitchValue);
+		if (pitchValue > 0) {
+			sampleCount++;
+			sampleSum += pitchValue;
+			if(sampleCount >= 5) {
+				float avg = sampleSum/sampleCount;
+				sampleCount = 0;
+				sampleSum = 0;
+				Debug.Log("Average Pitch: "+avg);
+			}
+		} else {
+			if(sampleCount > 0) {
+				float avg = sampleSum/sampleCount;
+				sampleSum = 0;
+				sampleCount = 0;
+				Debug.Log("Average Pitch: "+avg);
+			}
 		}
-		offset += 100;
-
-		if (data == null) {
-			Debug.Log("Failed to get Audio Data!!!");
-			return;
-		}
-		ArrayList s = new ArrayList ();
-		foreach (float f in data) {
-			s.Add(Mathf.Abs(f));
-
-		}
-		s.Sort ();
-		float volume = (float)s [5];
-		avg += volume;
-		//Debug.Log ("Volume: " + volume);
-		/*
-		var byteArray = new byte[data.Length * 4];
-		Buffer.BlockCopy(data, 0, byteArray, 0, byteArray.Length);
-
-		int volume = calculateRMSLevel (byteArray);
-		Debug.Log ("Volume: "+volume);
-		*/
 	}
 	
 	private const int SAMPLECOUNT = 256;   // Sample Count.
-	private const float REFVALUE = 0.1f;    // RMS value for 0 dB.
 	private const float THRESHOLD = 0.02f;  // Minimum amplitude to extract pitch (recieve anything)
 	
-	public int clamp = 160;            // Used to clamp dB (I don't really understand this either).
-	
 	private float pitchValue;
-	private float rmsValue;
-	private float dbValue;
 	
 	private void AnalyzeSound() {
 		float[] spectrum = new float[SAMPLECOUNT];
-		// Get all of our samples from the mic.
-		float[] samples = new float[SAMPLECOUNT];
-		audio.GetOutputData(samples, 0);
-		
-		// Sums squared samples
-		float sum = 0;
-		for (int i = 0; i < SAMPLECOUNT; i++){
-			sum += Mathf.Pow(samples[i], 2);
-		}
-		
-		// RMS is the square root of the average value of the samples.
-		rmsValue = Mathf.Sqrt(sum / (float) SAMPLECOUNT);
-		dbValue = 20 * Mathf.Log10(rmsValue / REFVALUE);
-		
-		// Clamp it to {clamp} min
-		if (dbValue < -clamp) {
-			dbValue = -clamp;
-		}
 		
 		// Gets the sound spectrum.
 		audio.GetSpectrumData(spectrum, 0, FFTWindow.BlackmanHarris);
@@ -120,22 +80,6 @@ public class MicListen : MonoBehaviour {
 		
 		// Convert index to frequency
 		pitchValue = freqN * 24000f / (float)SAMPLECOUNT;
-	}
-	
-	
-	private int calculateRMSLevel(byte[] data) {
-		long lSum = 0;
-		for (int i=0; i<data.Length; i++) {
-			lSum = lSum + (long)data[i];
-		}
-		double dAvg = lSum / data.Length;
-		
-		double sumMeanSquare = 0;
-		for(int j=0; j < data.Length; j++) {
-			sumMeanSquare = sumMeanSquare + (double)(Mathf.Pow((float)(data[j] - dAvg), 2f));
-		}
-		double averageMeanSquare = sumMeanSquare / data.Length;
-		return (int)(Mathf.Pow ((float)averageMeanSquare, 0.5f) + 0.5f);
 	}
 	
 }
