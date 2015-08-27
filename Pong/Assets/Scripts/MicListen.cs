@@ -28,22 +28,33 @@ public class MicListen : MonoBehaviour {
 	void Update () {
 		AnalyzeSound();
 		//Debug.Log ("pitchValue: " + pitchValue);
+		float avg = 0;
 		if (pitchValue > 0) {
 			sampleCount++;
 			sampleSum += pitchValue;
-			if(sampleCount >= 5) {
-				float avg = sampleSum/sampleCount;
+			if(sampleCount >= 10) {
+				avg = sampleSum/sampleCount;
 				sampleCount = 0;
 				sampleSum = 0;
 				Debug.Log("Average Pitch: "+avg);
 			}
 		} else {
 			if(sampleCount > 0) {
-				float avg = sampleSum/sampleCount;
+				avg = sampleSum/sampleCount;
 				sampleSum = 0;
 				sampleCount = 0;
 				Debug.Log("Average Pitch: "+avg);
+			} else {
+				avg = 0;
 			}
+		}
+		if (avg <= 400 && avg > 0) {
+			transform.position = new Vector3 (0, -4, 0);
+		} else if (avg >= 1200) {
+			transform.position = new Vector3 (0, 4, 0);
+		} else if (avg > 400 && avg < 1200) {
+			float location = (avg - 800f)/100f;
+			transform.position = new Vector3(0, location, 0);
 		}
 	}
 	
