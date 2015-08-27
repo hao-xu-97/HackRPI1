@@ -35,7 +35,7 @@ public class Increment : MonoBehaviour {
 	public void increment(){
 		if (currentScore < 9) {
 			currentScore++;
-			rend.material.mainTexture = score [currentScore];
+			rend.material.SetTexture (0, score [currentScore]);
 		} else {
 			currentScore = 0;
 			rend.material.mainTexture = score [0];
